@@ -113,8 +113,10 @@ test("Simulate Authentication", function(t) {
   // server.inject lets us similate an http request
   server.inject(options, function(res) {
     token = res.headers.authorization;
+    console.log( '\n - - - - - - - - - - - - - - - - - - - -')
+    console.log(res.headers['set-cookie']);
+    console.log( '- - - - - - - - - - - - - - - - - - - - \n')
     t.equal(res.statusCode, 200, "VALID Token should succeed!");
-
     t.end();
   });
 });

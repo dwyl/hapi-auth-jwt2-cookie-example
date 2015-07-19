@@ -5,6 +5,16 @@ var port        = process.env.PORT || 8000;  // allow port to be set
 var aguid       = require('aguid')  // https://github.com/ideaq/aguid
 var redis       = require('redis'); // https://github.com/docdis/learn-redis
 var url         = require('url');   // node core!
+
+var cookie_options = {
+  ttl: 365 * 24 * 60 * 60 * 1000, // expires a year from today
+  encoding: 'none',    // we already used JWT to encode
+  isSecure: true,      // warm & fuzzy feelings
+  isHttpOnly: true,    // prevent client alteration
+  clearInvalid: false, // remove invalid cookies
+  strictHeader: true   // don't allow violations of RFC 6265
+}
+
 // if you don't already have a *FREE* RedisCloud Account
 // visit: https://addons.heroku.com/rediscloud (it works outside heroku! free!)
 var redisURL    = url.parse(process.env.REDISCLOUD_URL);
@@ -58,8 +68,9 @@ server.register(hapiAuthJWT, function (err) {
   // }
   // see: http://hapijs.com/api#serverauthschemename-scheme
   server.auth.strategy('jwt', 'jwt', true,
-  { key: process.env.JWT_SECRET,  validateFunc: validate,
-    verifyOptions: { ignoreExpiration: true }
+  { key: process.env.JWT_SECRET,
+    validateFunc: validate,
+    verifyOptions: { ignoreExpiration: true, algorithms: [ 'HS256' ] }
   });
 
   server.route([
@@ -73,7 +84,9 @@ server.register(hapiAuthJWT, function (err) {
       method: ['GET','POST'], path: '/restricted', config: { auth: 'jwt' },
       handler: function(request, reply) {
         reply({text: 'You used a Token!'})
-        .header("Authorization", request.headers.authorization);
+        .header("Authorization", request.headers.authorization)
+        .state("token", request.headers.authorization, {ttl: 365 * 30 * 7 * 24 * 60 * 60 * 1000})
+        // .set(token)
       }
     },
     { // implement your own login/auth function here
@@ -89,9 +102,9 @@ server.register(hapiAuthJWT, function (err) {
         // sign the session as a JWT
         var token = JWT.sign(session, process.env.JWT_SECRET); // synchronous
         console.log(token);
-
         reply({text: 'Check Auth Header for your Token'})
-        .header("Authorization", token);
+        .header("Authorization", token)
+        .state("token", token, cookie_options)
       }
     },
     {
