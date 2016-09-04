@@ -12,7 +12,7 @@ using **Redis** (hosted on Heroku) with ***tests***!
 [![bitHound Score](https://www.bithound.io/github/dwyl/hapi-auth-jwt2-example/badges/score.svg)](https://www.bithound.io/github/dwyl/hapi-auth-jwt2-example)
 [![Node.js Version](https://img.shields.io/node/v/hapi-auth-jwt2.svg?style=flat "Node.js 10 & 12 and io.js latest both supported")](http://nodejs.org/download/)
 [![NPM Version](https://badge.fury.io/js/hapi-auth-jwt2.svg?style=flat)](https://npmjs.org/package/hapi-auth-jwt2)
-[![HAPI 8.5](http://img.shields.io/badge/hapi-8.5-brightgreen.svg "Latest Hapi.js")](http://hapijs.com)
+[![HAPI 15.0.3](http://img.shields.io/badge/hapi-15.0.3-brightgreen.svg "Latest Hapi.js")](http://hapijs.com)
 [![devDependency Status](https://david-dm.org/dwyl/hapi-auth-jwt2-example/dev-status.svg)](https://david-dm.org/dwyl/hapi-auth-jwt2-example#info=devDependencies)
 
 ## Environment Variables
