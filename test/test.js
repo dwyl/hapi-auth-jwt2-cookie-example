@@ -1,7 +1,7 @@
 var test   = require('tape');
 var JWT    = require('jsonwebtoken');
 
-var server = require('../index.js');
+var server = require('../server.js');
 
 test("request to GET / should not require session token", function(t) {
   var options = {
@@ -161,18 +161,7 @@ test("Attempt to Access restricted content with JWT which is no longer valid", f
   // server.inject lets us similate an http request
   server.inject(options, function(res) {
     t.equal(res.statusCode, 401, "Session is no longer valid. (cause we logged out!)");
-    t.end();
-  });
-});
-
-test("End Connection to RedisCloud", function(t) {
-  var options = {
-    method: "GET",
-    url: "/end"
-  };
-  server.inject(options, function(response) {
-    t.equal(response.statusCode, 200, "Redis connection closed.");
-    server.stop();
+    server.stop(() => console.log('done!'));
     t.end();
   });
 });
