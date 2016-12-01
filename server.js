@@ -1,3 +1,4 @@
+require('env2')('.env');
 var Hapi        = require('hapi');     // https://github.com/nelsonic/learn-hapi
 var hapiAuthJWT = require('hapi-auth-jwt2'); // http://git.io/vT5dZ
 var JWT         = require('jsonwebtoken');   // used to sign our content
@@ -13,7 +14,8 @@ var cookie_options = {
   isSecure: false,      // warm & fuzzy feelings
   isHttpOnly: true,    // prevent client alteration
   clearInvalid: false, // remove invalid cookies
-  strictHeader: true   // don't allow violations of RFC 6265
+  strictHeader: true,  // don't allow violations of RFC 6265
+  path: '/'            // set the cookie for all routes
 }
 
 
@@ -34,7 +36,7 @@ var validate = function (decoded, request, callback) {
     }
 
     if (session.valid === true) {
-	    console.log('I\'m here');	
+	    console.log('I\'m here');
       return callback(rediserror, true);
     }
     else {
@@ -47,7 +49,7 @@ var server = new Hapi.Server();
 server.connection({ port: port });
 
 server.register([
-  hapiAuthJWT, 
+  hapiAuthJWT,
   { register: require('hapi-redis-connection')} // no options required
   ], function (err) {
   assert(!err); // halt if error
