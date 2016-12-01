@@ -10,9 +10,4 @@ the doing request: http://localhost:8000/restricted --> {"statusCode":401,"error
  - - - - - - - REDIS reply - - - - - - -  {"valid":true,"id":"79616ea6-19c8-4ef1-8994-042e8849afde","exp":1480526896708}
 I'm here
 
-seams than call calback with true in validation but fails authorization.
-
-
-
-
-
+seams than call callback with true in validation but fails authorization.

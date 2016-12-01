@@ -27,3 +27,42 @@ export REDISCLOUD_URL=redis://rediscloud:OhEJvSgna@pub-redis-10689.eu-west-1-2.1
 
 
 If you have ***any questions***, please ask! [![Join the chat at https://gitter.im/dwyl/chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dwyl/chat/?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  we are here to help!
+
+<br />
+
+## Need Help? Got Questions?
+
+> If you have questions or need _any_ help please post an issue: https://github.com/dwyl/hapi-auth-jwt2-cookie-example/issues
+
+<hr />
+
+@MassimoCappellano psoted the following question:
+
+Running the example on my computer, from chrome doing two GET request (login and restricted resource):
+
+FIRST:
+
+http://localhost:8000/auth
+
+in the server response, in the header set cookie: token=...................................... as expected
+
+THEN:
+
+http://localhost:8000/restricted
+
+{"statusCode":401,"error":"Unauthorized","message":"Missing authentication"}
+
+I expected that the cookie would be set by the auth request (1) so it should be authenticated. Using chrome console seems that the cookie of the first response
+is not used in the second request.
+It's correct?
+
+Can someone explain if I miss something?
+
+> ***Answer***: please re-try in browser, open Dev Tools
+then view the "Application" tab and expand the cookies section:
+
+when we view the `/auth` route in Google Chrome it sets the cookie for the domain:
+![hapi-auth-jwt2-showing-auth-route](https://cloud.githubusercontent.com/assets/194400/20802422/e8468b8a-b7e3-11e6-9f6a-05989d128131.png)
+
+And when we visit `/restricted` which _requires_ as JWT we see:
+![hapi-auth-jwt2-showing-restricted-route](https://cloud.githubusercontent.com/assets/194400/20802426/eb46635a-b7e3-11e6-9cf9-ff4d09454a87.png)

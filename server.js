@@ -89,7 +89,7 @@ server.register([
         // sign the session as a JWT
         var token = JWT.sign(session, process.env.JWT_SECRET); // synchronous
         console.log(token);
-        reply({text: 'Check Auth Header for your Token'})
+        reply({text: 'Check Browser Cookie or Auth Header for your Token (JWT)'})
         .header("Authorization", token)
         .state("token", token, cookie_options)
       }
@@ -112,7 +112,8 @@ server.register([
           // create the session in Redis
           request.redis.set(session.id, JSON.stringify(session));
 
-          reply({text: 'Check Auth Header for your Token'})
+          return reply({text: 'You have been logged out'})
+          .unstate('token', cookie_options);
         })
       }
     }
