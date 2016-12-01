@@ -36,9 +36,9 @@ If you have ***any questions***, please ask! [![Join the chat at https://gitter.
 
 <hr />
 
-@MassimoCappellano psoted the following question:
+@MassimoCappellano posted the following question: [issues#2](https://github.com/dwyl/hapi-auth-jwt2-cookie-example/issues/2)
 
-Running the example on my computer, from chrome doing two GET request (login and restricted resource):
+Running the example on my computer, from Chrome doing two GET requests (login and restricted resource):
 
 FIRST:
 
@@ -58,7 +58,9 @@ It's correct?
 
 Can someone explain if I miss something?
 
-> ***Answer***: please re-try in browser, open Dev Tools
+> ***Answer***: you aren't missing anything,
+the demo server needed to be updated for latest Hapi,
+please re-try in browser, open Dev Tools
 then view the "Application" tab and expand the cookies section:
 
 when we view the `/auth` route in Google Chrome it sets the cookie for the domain:
