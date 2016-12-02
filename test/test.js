@@ -1,6 +1,5 @@
 var test   = require('tape');
 var JWT    = require('jsonwebtoken');
-
 var server = require('../server.js');
 
 test("request to GET / should not require session token", function(t) {
@@ -102,9 +101,9 @@ test("Attempt to access restricted content with Well-formed Token but invalid se
   });
 });
 
-var token; // used in all subsequent tests
+var TOKEN; // used in all subsequent tests
 
-test("Simulate Authentication", function(t) {
+test("Simulate Authentication by visiting /auth", function(t) {
   // use the token as the 'authorization' header in requests
   var options = {
     method: "POST",
@@ -112,7 +111,7 @@ test("Simulate Authentication", function(t) {
   };
   // server.inject lets us similate an http request
   server.inject(options, function(res) {
-    token = res.headers.authorization;
+    TOKEN = res.headers.authorization;
     console.log( '\n - - - - - - - - - - - - - - - - - - - -')
     console.log(res.headers['set-cookie']);
     console.log( '- - - - - - - - - - - - - - - - - - - - \n')
@@ -126,22 +125,22 @@ test("Access restricted content with *VALID* JWT", function(t) {
   var opt = {
     method: 'POST',
     url: '/restricted',
-    headers: { 'Authorization' : token } // token from previous test
+    headers: { 'Authorization' : TOKEN } // token from previous test
   };
   // server.inject lets us similate an http request
   server.inject(opt, function(response) {
-    token = response.headers.authorization;
     t.equal(response.statusCode, 200, "Expect VALID Token to succeed!");
     t.end();
   });
 });
 
 test("Logout to end the session", function(t) {
+  console.log('----> TOKEN:', TOKEN)
   // use the token as the 'authorization' header in requests
   var options = {
     method: 'POST',
     url: '/logout',
-    headers: { 'Authorization' : token } // token from previous test
+    headers: { 'Authorization' : TOKEN } // token from previous test
   };
 
   server.inject(options, function(res) {
@@ -156,7 +155,7 @@ test("Attempt to Access restricted content with JWT which is no longer valid", f
   var options = {
     method: 'POST',
     url: '/restricted',
-    headers: { 'Authorization' : token } // token from previous test
+    headers: { 'Authorization' : TOKEN } // token from previous test
   };
   // server.inject lets us similate an http request
   server.inject(options, function(res) {

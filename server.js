@@ -95,10 +95,8 @@ server.register([
       method: ['GET','POST'], path: "/logout", config: { auth: 'jwt' },
       handler: function(request, reply) {
         // implement your own login/auth function here
-        var decoded = JWT.decode(request.headers.authorization,
-          process.env.JWT_SECRET);
         var session;
-        request.redis.get(decoded.id, function(rediserror, redisreply) {
+        request.redis.get(request.auth.credentials.id, function(rediserror, redisreply) {
 
           session = JSON.parse(redisreply)
           console.log(' - - - - - - SESSION - - - - - - - -')
