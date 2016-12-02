@@ -70,10 +70,7 @@ server.register([
     {
       method: ['GET','POST'], path: '/restricted', config: { auth: 'jwt' },
       handler: function(request, reply) {
-        reply({text: 'You used a Token!'})
-        .header("Authorization", request.headers.authorization)
-        .state("token", request.headers.authorization, {ttl: 365 * 30 * 7 * 24 * 60 * 60 * 1000})
-        // .set(token)
+        return reply({text: 'You used a Token!'});
       }
     },
     { // implement your own login/auth function here
