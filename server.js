@@ -1,3 +1,4 @@
+require('env2')('.env');
 var Hapi        = require('hapi');     // https://github.com/nelsonic/learn-hapi
 var hapiAuthJWT = require('hapi-auth-jwt2'); // http://git.io/vT5dZ
 var JWT         = require('jsonwebtoken');   // used to sign our content
@@ -10,10 +11,11 @@ var assert      = require('assert');
 var cookie_options = {
   ttl: 365 * 24 * 60 * 60 * 1000, // expires a year from today
   encoding: 'none',    // we already used JWT to encode
-  isSecure: true,      // warm & fuzzy feelings
+  isSecure: false,      // warm & fuzzy feelings
   isHttpOnly: true,    // prevent client alteration
   clearInvalid: false, // remove invalid cookies
-  strictHeader: true   // don't allow violations of RFC 6265
+  strictHeader: true,  // don't allow violations of RFC 6265
+  path: '/'            // set the cookie for all routes
 }
 
 
@@ -34,6 +36,7 @@ var validate = function (decoded, request, callback) {
     }
 
     if (session.valid === true) {
+	    console.log('I\'m here');
       return callback(rediserror, true);
     }
     else {
@@ -46,7 +49,7 @@ var server = new Hapi.Server();
 server.connection({ port: port });
 
 server.register([
-  hapiAuthJWT, 
+  hapiAuthJWT,
   { register: require('hapi-redis-connection')} // no options required
   ], function (err) {
   assert(!err); // halt if error
@@ -67,10 +70,7 @@ server.register([
     {
       method: ['GET','POST'], path: '/restricted', config: { auth: 'jwt' },
       handler: function(request, reply) {
-        reply({text: 'You used a Token!'})
-        .header("Authorization", request.headers.authorization)
-        .state("token", request.headers.authorization, {ttl: 365 * 30 * 7 * 24 * 60 * 60 * 1000})
-        // .set(token)
+        return reply({text: 'You used a Token!'});
       }
     },
     { // implement your own login/auth function here
@@ -86,7 +86,7 @@ server.register([
         // sign the session as a JWT
         var token = JWT.sign(session, process.env.JWT_SECRET); // synchronous
         console.log(token);
-        reply({text: 'Check Auth Header for your Token'})
+        reply({text: 'Check Browser Cookie or Auth Header for your Token (JWT)'})
         .header("Authorization", token)
         .state("token", token, cookie_options)
       }
@@ -95,10 +95,8 @@ server.register([
       method: ['GET','POST'], path: "/logout", config: { auth: 'jwt' },
       handler: function(request, reply) {
         // implement your own login/auth function here
-        var decoded = JWT.decode(request.headers.authorization,
-          process.env.JWT_SECRET);
         var session;
-        request.redis.get(decoded.id, function(rediserror, redisreply) {
+        request.redis.get(request.auth.credentials.id, function(rediserror, redisreply) {
 
           session = JSON.parse(redisreply)
           console.log(' - - - - - - SESSION - - - - - - - -')
@@ -109,7 +107,8 @@ server.register([
           // create the session in Redis
           request.redis.set(session.id, JSON.stringify(session));
 
-          reply({text: 'Check Auth Header for your Token'})
+          return reply({text: 'You have been logged out'})
+          .unstate('token', cookie_options);
         })
       }
     }

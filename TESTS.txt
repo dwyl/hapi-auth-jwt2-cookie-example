@@ -1,0 +1,13 @@
+http://localhost:8000/auth --> RESPONSE: {"text":"Check Auth Header for your Token"} and cookie token was setted
+
+the doing request: http://localhost:8000/restricted --> {"statusCode":401,"error":"Unauthorized","message":"Missing authentication"} and on console:
+
+ - - - - - - - DECODED token:
+{ valid: true,
+  id: '79616ea6-19c8-4ef1-8994-042e8849afde',
+  exp: 1480526896708,
+  iat: 1480525096 }
+ - - - - - - - REDIS reply - - - - - - -  {"valid":true,"id":"79616ea6-19c8-4ef1-8994-042e8849afde","exp":1480526896708}
+I'm here
+
+seams than call callback with true in validation but fails authorization.
